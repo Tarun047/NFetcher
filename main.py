@@ -52,6 +52,7 @@ for link in l:
 		s.add(p)
 		ls.append(q)
 root = Tk()
+root.title("Tech News App")
 app = Application(master=root,res=s,links = ls)
 app.mainloop()
 app.destroy()
