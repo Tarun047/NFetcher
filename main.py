@@ -1,4 +1,3 @@
-from googlesearch import search
 from urllib.request import Request,urlopen
 from bs4 import BeautifulSoup
 import re
@@ -32,30 +31,22 @@ class Application(Frame):
 			self.ML.pack(side=LEFT,fill=BOTH)
 			self.scrollbar.config(command = self.ML.yview)
 			self.ML.bind("<<ListboxSelect>>",self.poll)
-	
+
 	def poll(self,*event):
 		selected = self.ML.curselection()
 		print(self.Links)
-		
-links = list(search('Tech News',num=10,stop=1,pause=2))
-req = Request(links[0],headers = {'User-Agent':'Mozilla/5.0'})
+
+req = Request('https://www.gadgetsnow.com/tech-news',headers = {'User-Agent':'Mozilla/5.0'})
 data = urlopen(req)
-content = data.read()
-soup = BeautifulSoup(content,"html.parser")
-l = soup.find_all("a",href=re.compile("tech-news/"))
+soup = BeautifulSoup(data,"html.parser")
+l = soup.find_all("span",{"class":"w_tle"})
 s = set()  # Title Set
 ls = [] #Links Set
-for link in l:
-	p = link.get('title')
-	q = link.get('href')
-	if(p is not None and q is not None):
-		s.add(p)
-		ls.append(q)
+for name in l[:-4]:
+	s.add(name.a.get_text())
+	ls.append(name.a['href'])
 root = Tk()
 root.title("Tech News App")
 app = Application(master=root,res=s,links = ls)
 app.mainloop()
 app.destroy()
-
-	
-	
